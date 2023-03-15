@@ -1,0 +1,85 @@
+from pathlib import Path
+from typing import Optional
+
+import numpy as np
+import numpy.typing as npt
+import pandas as pd
+from typer import Typer, Option
+from faker import Faker
+
+app = Typer(add_completion=False)
+
+
+@app.command()
+def generate(
+    records: Optional[int] = Option(10000, help='number of records'),
+    anomalies: Optional[int] = Option(5, help='number of anomalies'),
+    outfile: Optional[Path] = Option(Path('./data.csv'), help='output csv'),
+    seed: Optional[int] = Option(None, help='random seed')
+) -> None:
+    fake = Faker(['en_GB'])
+    if seed:
+        Faker.seed(seed)
+
+    if seed:
+        generator = np.random.default_rng(seed)
+    else:
+        generator = np.random.default_rng()
+
+    fields = [
+        'name',
+        'birthdate'
+        'sex',
+        'blood_group',
+        'address',
+        'mail',
+        'job',
+        'company',
+        'ssn',
+    ]
+    profiles = [fake.profile(fields) for i in range(records)]
+    df = pd.DataFrame(profiles)
+    df['height'] = heights(generator, number=records)
+    insert_anomalies(generator, df, number=anomalies)
+
+    df.to_csv(outfile, index=False)
+
+
+def heights(generator, number: int, mean: float = 168.6,
+            sem: float = 0.13) -> npt.NDArray[np.float64]:
+
+    standard_deviation = sem * np.sqrt(number)
+
+    return np.around(generator.normal(
+        loc=mean,
+        scale=standard_deviation,
+        size=number
+    ), 2)
+
+
+def insert_anomalies(generator, df: pd.DataFrame, number: int) -> None:
+    for i in generator.choice(df.shape[0], number, replace=False):
+        if generator.uniform() > 0.5:
+            df.at[i, 'height'] = generator.uniform(1000, 2000)
+        else:
+            df.at[i, 'height'] = generator.uniform(1, 10)
+
+
+@app.command()
+def solve(
+    infile: Optional[Path] = Option(Path('./data.csv'), help='input data')
+) -> None:
+    df = pd.read_csv(infile)
+
+    height = df['height']
+    mean = height[(height <= 1000) & (height > 10)].mean()
+    bad_mean = height.mean()
+
+    print(
+        f'The mean height is: {mean:.2f}\n'
+        f'Without removing anomalies: {bad_mean:.2f}'
+    )
+
+
+if __name__ == '__main__':
+    app()
