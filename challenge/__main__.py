@@ -39,8 +39,7 @@ def generate(
         'company',
         'ssn',
     ]
-    profiles = [fake.profile(fields) for i in range(records)]
-    df = pd.DataFrame(profiles)
+    df = pd.DataFrame(fake.profile(fields) for i in range(records))
     df['height'] = heights(generator, number=records)
     insert_anomalies(generator, df, number=anomalies)
 
