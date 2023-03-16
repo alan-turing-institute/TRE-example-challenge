@@ -1,4 +1,8 @@
 site_name: Data Safe Haven Example Challenge
+site_url: https://alan-turing-institute.github.io/TRE-example-challenge/
+repo_url: https://github.com/alan-turing-institute/TRE-example-challenge
+edit_uri: ""
+
 nav:
   - Usage: usage.md
   - Challenge: challenge.md
