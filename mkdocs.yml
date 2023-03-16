@@ -1,0 +1,4 @@
+site_name: Data Safe Haven Example Challenge
+nav:
+  - Usage: usage.md
+  - Challenge: challenge.md
