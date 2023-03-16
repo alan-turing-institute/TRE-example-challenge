@@ -70,13 +70,23 @@ def insert_anomalies(generator: GeneratorType, df: pd.DataFrame,
 
 @app.command()
 def solve(
-    infile: Path = Option(Path('./data.csv'), help='input data')
+    infile: Path = Option(Path('./data.csv'), help='input data'),
+    verbose: bool = Option(False, help='verbose information')
 ) -> None:
     df = pd.read_csv(infile)
 
     height = df['height']
     mean = height[(height <= 1000) & (height > 10)].mean()
     bad_mean = height.mean()
+
+    if verbose:
+        print('Height column summary')
+        print(height.describe())
+        print('\nLargest values')
+        print(height.sort_values(ascending=False).head())
+        print('\nSmallest values')
+        print(height.sort_values().head())
+        print('\n')
 
     print(
         f'The mean height is: {mean:.2f}\n'
