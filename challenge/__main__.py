@@ -3,18 +3,20 @@ from typing import Optional
 
 import numpy as np
 import numpy.typing as npt
-import pandas as pd
+import pandas as pd  # type: ignore
 from typer import Typer, Option
 from faker import Faker
+
+GeneratorType = np.random._generator.Generator
 
 app = Typer(add_completion=False)
 
 
 @app.command()
 def generate(
-    records: Optional[int] = Option(10000, help='number of records'),
-    anomalies: Optional[int] = Option(5, help='number of anomalies'),
-    outfile: Optional[Path] = Option(Path('./data.csv'), help='output csv'),
+    records: int = Option(10000, help='number of records'),
+    anomalies: int = Option(5, help='number of anomalies'),
+    outfile: Path = Option(Path('./data.csv'), help='output csv'),
     seed: Optional[int] = Option(None, help='random seed')
 ) -> None:
     fake = Faker(['en_GB'])
@@ -45,7 +47,7 @@ def generate(
     df.to_csv(outfile, index=False)
 
 
-def heights(generator, number: int, mean: float = 168.6,
+def heights(generator: GeneratorType, number: int, mean: float = 168.6,
             sem: float = 0.13) -> npt.NDArray[np.float64]:
 
     standard_deviation = sem * np.sqrt(number)
@@ -57,7 +59,8 @@ def heights(generator, number: int, mean: float = 168.6,
     ), 2)
 
 
-def insert_anomalies(generator, df: pd.DataFrame, number: int) -> None:
+def insert_anomalies(generator: GeneratorType, df: pd.DataFrame,
+                     number: int) -> None:
     for i in generator.choice(df.shape[0], number, replace=False):
         if generator.uniform() > 0.5:
             df.at[i, 'height'] = generator.uniform(1000, 2000)
@@ -67,7 +70,7 @@ def insert_anomalies(generator, df: pd.DataFrame, number: int) -> None:
 
 @app.command()
 def solve(
-    infile: Optional[Path] = Option(Path('./data.csv'), help='input data')
+    infile: Path = Option(Path('./data.csv'), help='input data')
 ) -> None:
     df = pd.read_csv(infile)
 
