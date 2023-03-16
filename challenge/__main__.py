@@ -63,9 +63,9 @@ def insert_anomalies(generator: GeneratorType, df: pd.DataFrame,
                      number: int) -> None:
     for i in generator.choice(df.shape[0], number, replace=False):
         if generator.uniform() > 0.5:
-            df.at[i, 'height'] = generator.uniform(1000, 2000)
+            df.at[i, 'height'] = np.around(generator.uniform(1000, 2000), 2)
         else:
-            df.at[i, 'height'] = generator.uniform(1, 10)
+            df.at[i, 'height'] = np.around(generator.uniform(1, 10), 2)
 
 
 @app.command()
