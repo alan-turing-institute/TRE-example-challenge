@@ -18,7 +18,7 @@ Here are some instructions to point you in the right direction and prompts for t
 
 ### Find the data
 
-- In a Data Safe Haven environment the input data is located at `/input`.
+- In a Data Safe Haven environment the input data is located at `/data`.
 - Can you modify the input data in-place?
 - Can you remove the data from the environment?
 
