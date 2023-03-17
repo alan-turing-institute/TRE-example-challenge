@@ -47,9 +47,9 @@ def generate(
 
 
 def heights(generator: GeneratorType, number: int, mean: float = 168.6,
-            sem: float = 0.13) -> npt.NDArray[np.float64]:
-
-    standard_deviation = sem * np.sqrt(number)
+            standard_deviation: float = 8) -> npt.NDArray[np.float64]:
+    # mean and standard deviation are rough approximations from
+    # https://web.archive.org/web/20160702012345/http://www.hscic.gov.uk/catalogue/PUB13218/HSE2012-Ch10-Adult-BMI.pdf
 
     return np.around(generator.normal(
         loc=mean,
