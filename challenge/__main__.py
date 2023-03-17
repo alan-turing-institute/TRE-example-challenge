@@ -88,8 +88,8 @@ def solve(
         print('\n')
 
     print(
-        f'The mean height is: {mean:.2f}\n'
-        f'Without removing anomalies: {bad_mean:.2f}'
+        f'The mean height is: {mean:.1f}\n'
+        f'Without removing anomalies: {bad_mean:.1f}'
     )
 
 
