@@ -1,0 +1,144 @@
+---
+title: "AI UK Demonstration"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+# Solution
+
+This document demonstrates one way to solve the challenge using R.
+
+## Libraries
+
+We're going to use the `tidyverse` suite of packages for this exercise.
+
+Different security tiers of the Data Safe Haven support installing packages in different ways.
+
+- Tier ≤ 2: Able to install any package from PyPI and CRAN
+- Tier 3: Able to install a configurable, curated list of packages from PyPI and CRAN
+
+In addition, for R some packages beyond the default packages (those collectively called `base` R) are installed automatically, so we don't have to install them here.
+
+Let's load the `tidyverse` packages.
+
+```{r load-packages}
+library(tidyverse)
+```
+
+## Find the data  
+
+In a Data Safe Haven environment, the input data is located at `/data/`.
+
+```{bash list-data-folder}
+ls /data
+```
+
+The `/data` directory and the files within it are read-only.
+
+This preserves the integrity of input data.
+
+We can test this by trying to write to `/data` and to append data to `/data/data.csv'.
+
+```{bash create-demo, error = TRUE}
+touch /data/new_file.txt
+echo "hello" >> /data/data.csv
+```
+
+## Inspect the data
+
+We will read the data from the `csv` file and store it in a `data.frame`.
+
+```{r load-data}
+df <- read_csv("/data/data.csv")
+```
+
+We want to calculate the **mean height**.
+
+Let's look at the column names to see if we can find which column contains the height data.
+
+```{r column-names}
+colnames(df)
+```
+
+We could go ahead and calculate the mean immediately:
+
+```{r calc-mean, eval = FALSE}
+mean(df$height)
+```
+
+However, we should look at the data first to check whether it makes sense.
+
+First, let's get a summary of the height column.
+
+```{r get-summary}
+height <- df$height 
+
+summary(height)
+```
+
+The mean looks reasonable.
+
+168.8 would make sense if the height values are in cm.
+
+But look at the minimum and maximum values.
+Those don't seem reasonable at all.
+
+Let's look closer at the smallest values.
+
+```{r sort-height}
+height_sorted <- sort(height)
+head(height_sorted, 10)
+```
+
+And then let's look at the largest values.
+
+```{r tail-height}
+tail(height_sorted, 10)
+```
+
+## Cleaning the data
+
+It would be more reasonable to remove these outliers.
+
+Here, we will use information about how those outliers were generated to remove them.
+
+The anomalously large heights are always greater than or equal to 1000.
+The anomalously smaller heights are always less than 10.
+
+```{r filter-height}
+height_filtered <- height[height < 1000 & height >= 10]
+```
+
+## Calculating the mean
+
+Now we can calculate the mean of our cleaned height data.
+
+```{r mean-height}
+mean_height <- round(mean(height_filtered), 1)
+mean_height
+```
+
+## Prepare your result for extraction
+
+In a Data Safe Haven environment data in `/output` can be considered for removing from the environment.
+
+You can read, write and delete files in the `/output` directory.
+
+```{bash create-file}
+ls /output
+echo "hello" >> /output/a.txt
+cat /output/a.txt
+```
+
+If we write our output to a file in `/output` an admin will be able to create a link to download that file after the review process is completed.
+
+```{r write-output}
+writeLines(as.character(mean_height),
+           "/output/mean_height.txt")
+```
+
+```{bash check-output}
+cat /output/mean_height.txt
+```
+
+
