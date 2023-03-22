@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a example task to give a brief impression of when a trusted research environment may be used and the flow of working with Data Safe Haven.
+This is an example task to give a brief impression of when a trusted research environment may be used and the flow of working with Data Safe Haven.
 
 There is a dummy data set containing personal information.
 This data is synthetic, it does not represent, nor was it built based upon real people.
