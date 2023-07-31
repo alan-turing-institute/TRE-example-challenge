@@ -1,6 +1,6 @@
 name: tre-example-challenge
 channels:
-  - conda-forge
+  - defaults
 dependencies:
   - faker
   - numpy
