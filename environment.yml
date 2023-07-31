@@ -1,0 +1,8 @@
+name: tre-example-challenge
+channels:
+  - conda-forge
+dependencies:
+  - faker
+  - numpy
+  - pandas
+  - typer
