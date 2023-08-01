@@ -1,0 +1,8 @@
+name: tre-example-challenge
+# channels:
+#   - defaults
+dependencies:
+  - faker
+  - numpy
+  - pandas
+  - typer
